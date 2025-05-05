@@ -103,14 +103,14 @@ export default function RestaurantDashboardScreen() {
         />
         <View style={styles.logoContainer}>
           <Image
-            source={{ uri: userRestaurant.logo }}
+            source={{ uri: userRestaurant.logo }} // Assuming logo is now a string URL
             style={styles.logo}
             contentFit="cover"
           />
         </View>
         <View style={styles.restaurantInfo}>
           <Text style={styles.restaurantName}>{userRestaurant.name}</Text>
-          <Text style={styles.restaurantLocation}>{userRestaurant.location}</Text>
+          <Text style={styles.restaurantLocation}>{userRestaurant.location?.address || 'Location not available'}</Text> {/*Safe Location Display*/}
           <View style={styles.statsRow}>
             <View style={styles.statItem}>
               <Users size={16} color={"#0095F6"} />
@@ -249,7 +249,8 @@ export default function RestaurantDashboardScreen() {
           onPress={() => router.push("/create-recipe")}
         >
           <View style={[styles.actionIconContainer, { backgroundColor: "#8E8E8E" }]}>
-            <PlusSquare size={20} color={"#FFFFFF"} />
+            {/* Assuming PlusSquare is imported */}
+            {/* <PlusSquare size={20} color={"#FFFFFF"} /> */}
           </View>
           <View style={styles.actionTextContainer}>
             <Text style={styles.actionTitle}>Add Recipe</Text>

@@ -18,6 +18,7 @@ export interface Restaurant {
   description: string;
   imageUrl: string;
   coverImageUrl?: string;
+  logo?: string;
   location: Location;
   rating: number;
   reviewCount: number;
