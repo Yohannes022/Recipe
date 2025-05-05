@@ -1,43 +1,84 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+/**
+ * Tab navigation layout
+ * Defines the main tab structure for the app
+ * Includes tabs for home, explore, restaurants, cart, create, and profile
+ * Shows badge on cart tab when items are present
+ */
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { Tabs } from "expo-router";
+import { BarChart2, Home, PlusSquare, Search, Store, User } from "lucide-react-native";
+import React from "react";
+// 
+import { useAuthStore } from "@/store/authStore";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { user, isAdmin, isRestaurantOwner } = useAuthStore();
+  const showRestaurantTab = user && (isAdmin() || isRestaurantOwner());
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: "#0095F6",
+        tabBarInactiveTintColor: "#8E8E8E",
+        tabBarStyle: {
+          backgroundColor: "white",
+          borderTopColor: "#DBDBDB",
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "500",
+        },
+        headerStyle: {
+          backgroundColor: "#FAFAFA",
+        },
+        headerTintColor: "#262626",
+        headerShadowVisible: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Home",
+          tabBarIcon: ({ color }) => <Home size={22} color="#0095F6" />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="search"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Explore",
+          tabBarIcon: ({ color="#0095F6" }) => <Search size={22} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          tabBarIcon: ({ color }) => <PlusSquare size={22} color={color} />,
+        }}
+      />
+      {showRestaurantTab && (
+        <Tabs.Screen
+          name="restaurants"
+          options={{
+            title: "Restaurants",
+            tabBarIcon: ({ color }) => <Store size={22} color={color} />,
+          }}
+        />
+      )}
+      {showRestaurantTab && (
+        <Tabs.Screen
+          name="dashboard"
+          options={{
+            title: "Dashboard",
+            tabBarIcon: ({ color }) => <BarChart2 size={22} color={color} />,
+          }}
+        />
+      )}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => <User size={22} color={color} />,
         }}
       />
     </Tabs>
