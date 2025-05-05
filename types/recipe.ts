@@ -1,3 +1,6 @@
+
+import { Location } from './restaurant';
+
 export interface Ingredient {
   id: string;
   name: string;
@@ -73,7 +76,7 @@ export interface Restaurant {
   description: string;
   logo?: string;
   coverImage?: string;
-  location: string;
+  location: Location;
   phone: string;
   email?: string;
   website?: string;
