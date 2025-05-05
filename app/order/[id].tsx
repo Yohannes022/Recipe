@@ -25,7 +25,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// 
+
 import Button from "@/components/Button";
 import DeliveryMap from "@/components/restaurant/DeliveryMap";
 import OrderStatusTracker from "@/components/restaurant/OrderStatusTracker";
@@ -41,11 +41,15 @@ export default function OrderTrackingScreen() {
   const { getOrderById, cancelOrder } = useOrderStore();
   const { getRestaurantById } = useRestaurantStore();
   const { userLocation } = useLocationStore();
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const order = getOrderById(id);
   const restaurant = order ? getRestaurantById(order.restaurantId) : null;
 
-  const [isCancelling, setIsCancelling] = useState(false);
+  // Get delivery person info
+  const deliveryPerson = order?.deliveryPersonId
+    ? deliveryPeople.find((dp) => dp.id === order.deliveryPersonId)
+    : null;
 
   // Redirect if order not found
   useEffect(() => {
@@ -58,15 +62,10 @@ export default function OrderTrackingScreen() {
     return null;
   }
 
-  // Get delivery person info
-  const deliveryPerson = order.deliveryPersonId
-    ? deliveryPeople.find((dp) => dp.id === order.deliveryPersonId)
-    : null;
-
   /**
    * Handle order cancellation with confirmation
    */
-  const handleCancel = async () => {
+  const handleCancel = () => {
     if (order.status === "delivered" || order.status === "cancelled") {
       return;
     }
@@ -125,53 +124,48 @@ export default function OrderTrackingScreen() {
       />
 
       <ScrollView style={styles.content}>
-        {/* Order status tracker */}
         <View style={styles.statusContainer}>
           <OrderStatusTracker currentStatus={order.status} />
         </View>
 
-        {/* Delivery map - only shown when order is out for delivery */}
-        {order.status === "out_for_delivery" &&
-          order.deliveryPersonLocation && (
-            <View style={styles.mapContainer}>
-              <DeliveryMap
-                restaurantLocation={restaurant.location}
-                deliveryPersonLocation={order.deliveryPersonLocation}
-                userLocation={order.deliveryAddress}
-                estimatedTime={order.estimatedDeliveryTime}
-              />
+        {order.status === "out_for_delivery" && order.deliveryPersonLocation && (
+          <View style={styles.mapContainer}>
+            <DeliveryMap
+              restaurantLocation={restaurant.location}
+              deliveryPersonLocation={order.deliveryPersonLocation}
+              userLocation={order.deliveryAddress}
+              estimatedTime={order.estimatedDeliveryTime}
+            />
 
-              {/* Delivery person info */}
-              {deliveryPerson && (
-                <View style={styles.deliveryPersonContainer}>
-                  <Image
-                    source={{ uri: deliveryPerson.avatar }}
-                    style={styles.deliveryPersonAvatar}
-                    contentFit="cover"
-                  />
-                  <View style={styles.deliveryPersonInfo}>
-                    <Text style={styles.deliveryPersonName}>
-                      {deliveryPerson.name}
-                    </Text>
-                    <Text style={styles.deliveryPersonMeta}>
-                      {deliveryPerson.completedDeliveries} deliveries •{" "}
-                      {deliveryPerson.rating} ★
-                    </Text>
-                  </View>
-                  <View style={styles.deliveryPersonActions}>
-                    <TouchableOpacity style={styles.deliveryPersonAction}>
-                      <Phone size={20} color="#0095F6" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.deliveryPersonAction}>
-                      <MessageCircle size={20} color="#0095F6" />
-                    </TouchableOpacity>
-                  </View>
+            {deliveryPerson && (
+              <View style={styles.deliveryPersonContainer}>
+                <Image
+                  source={{ uri: deliveryPerson.avatar }}
+                  style={styles.deliveryPersonAvatar}
+                  contentFit="cover"
+                />
+                <View style={styles.deliveryPersonInfo}>
+                  <Text style={styles.deliveryPersonName}>
+                    {deliveryPerson.name}
+                  </Text>
+                  <Text style={styles.deliveryPersonMeta}>
+                    {deliveryPerson.completedDeliveries} deliveries •{" "}
+                    {deliveryPerson.rating} ★
+                  </Text>
                 </View>
-              )}
-            </View>
-          )}
+                <View style={styles.deliveryPersonActions}>
+                  <TouchableOpacity style={styles.deliveryPersonAction}>
+                    <Phone size={20} color="#0095F6" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.deliveryPersonAction}>
+                    <MessageCircle size={20} color="#0095F6" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+          </View>
+        )}
 
-        {/* Restaurant information */}
         <View style={styles.restaurantContainer}>
           <Image
             source={{ uri: restaurant.imageUrl }}
@@ -195,11 +189,9 @@ export default function OrderTrackingScreen() {
           </View>
         </View>
 
-        {/* Order details section */}
         <View style={styles.orderDetailsContainer}>
           <Text style={styles.sectionTitle}>Order Details</Text>
 
-          {/* Order items */}
           {order.items.map((item) => (
             <View key={item.id} style={styles.orderItem}>
               <View style={styles.orderItemQuantity}>
@@ -245,7 +237,6 @@ export default function OrderTrackingScreen() {
 
           <View style={styles.divider} />
 
-          {/* Order summary */}
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Subtotal</Text>
             <Text style={styles.summaryValue}>{order.subtotal} ETB</Text>
@@ -273,7 +264,6 @@ export default function OrderTrackingScreen() {
             <Text style={styles.totalValue}>{order.total} ETB</Text>
           </View>
 
-          {/* Payment information */}
           <View style={styles.paymentRow}>
             <Text style={styles.paymentLabel}>Payment Method</Text>
             <Text style={styles.paymentValue}>
@@ -310,7 +300,6 @@ export default function OrderTrackingScreen() {
         </View>
       </ScrollView>
 
-      {/* Cancel order button - only shown for orders that can be cancelled */}
       {canCancel && (
         <View style={styles.footer}>
           <Button
