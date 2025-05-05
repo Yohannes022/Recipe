@@ -77,16 +77,24 @@ export interface Restaurant {
   imageUrl: string;
   coverImageUrl?: string;
   location: Location;
-  phone: string;
-  email?: string;
-  website?: string;
-  openingHours?: string;
-  adminIds: string[]; // User IDs of admins
-  recipeIds: string[]; // Recipe IDs of restaurant recipes
+  rating: number;
+  reviewCount: number;
+  cuisineType: string[];
+  priceRange: "low" | "medium" | "high";
+  openingHours: {
+    open: string;
+    close: string;
+  };
+  contactPhone: string;
+  contactEmail?: string;
+  isOpen: boolean;
+  deliveryFee: number;
+  minOrderAmount: number;
+  estimatedDeliveryTime: number;
   menuCategories: MenuCategory[];
   followers: number;
-  rating: number;
-  verified: boolean;
+  ownerId: string;
+  createdAt: string;
 }
 
 export interface MenuCategory {
