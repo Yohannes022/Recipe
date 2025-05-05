@@ -1,6 +1,7 @@
+
 import { useRouter } from "expo-router";
 import { Filter } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FlatList,
   ScrollView,
@@ -9,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// 
+
 import CategoryPill from "@/components/CategoryPill";
 import RecipeCard from "@/components/RecipeCard";
 import SearchBar from "@/components/SearchBar";
@@ -31,6 +32,14 @@ export default function SearchScreen() {
   } = useRecipeStore();
 
   const [showFilters, setShowFilters] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Ensure recipes are loaded
+    if (recipes.length > 0) {
+      setLoading(false);
+    }
+  }, [recipes]);
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -54,13 +63,17 @@ export default function SearchScreen() {
     setSearchQuery("");
   };
 
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Text style={styles.loadingText}>Loading recipes...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.searchHeader}>
-        {/* Make sure SearchBar accepts these props; if not, update the SearchBar component accordingly */}
-        {/* Ensure that "@/components/SearchBar" exports a component that accepts value, onChangeText, onClear, and placeholder props.
-            If not, update the SearchBar component accordingly. */}
-        {/* Make sure that "@/components/SearchBar" exports a SearchBar component that accepts value, onChangeText, onClear, and placeholder props */}
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -76,11 +89,7 @@ export default function SearchScreen() {
         >
           <Filter
             size={20}
-            color={
-              selectedTag || selectedRegion
-                ? "white"
-                : "#262626"
-            }
+            color={selectedTag || selectedRegion ? "white" : "#262626"}
           />
         </TouchableOpacity>
       </View>
@@ -150,7 +159,9 @@ export default function SearchScreen() {
         <FlatList
           data={filteredRecipes}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <RecipeCard recipe={item} />}
+          renderItem={({ item }) => (
+            <RecipeCard recipe={item} variant="horizontal" />
+          )}
           contentContainerStyle={styles.recipesList}
           showsVerticalScrollIndicator={false}
         />
@@ -169,8 +180,16 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0095F6",
+    backgroundColor: "#FAFAFA",
     padding: 20,
+  },
+  centerContent: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    ...typography.body,
+    color: "#8E8E8E",
   },
   searchHeader: {
     flexDirection: "row",
@@ -218,7 +237,7 @@ const styles = StyleSheet.create({
   },
   tagsContainer: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    paddingBottom: 8,
   },
   clearAllButton: {
     alignItems: "center",
