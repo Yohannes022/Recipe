@@ -1,0 +1,32 @@
+iOS Bundled 94ms node_modules\expo-router\entry.js (1 module)
+ ERROR  Invariant Violation: TurboModuleRegistry.getEnforcing(...): 'RNMapsAirModule' could not be found. Verify that a module by this name is registered in the native binary., js engine: hermes
+ WARN  Route "./order/[id].tsx" is missing the required default export. Ensure a React component is exported as default.
+ WARN  [Layout children]: No route named "edit-recipe/[id]" exists in nested children: ["+not-found", "checkout", "create-recipe", "edit-profile", "error-boundary", "modal", "restaurant-dashboard", "settings", "_sitemap", "(auth)", "(tabs)", "edit_recipe/[id]", "recipe/[id]", "restaurant/[id]", "restaurant/[id]/add-menu-items", "restaurant/[id]/manage"]
+ WARN  [Layout children]: No route named "restaurant/[id]/add-menu-item" exists in nested children: ["+not-found", "checkout", "create-recipe", "edit-profile", "error-boundary", "modal", "restaurant-dashboard", "settings", "_sitemap", "(auth)", "(tabs)", "edit_recipe/[id]", "recipe/[id]", "restaurant/[id]", "restaurant/[id]/add-menu-items", "restaurant/[id]/manage"]
+ WARN  [Layout children]: No route named "restaurant/[id]/edit-menu-item" exists in nested children: ["+not-found", "checkout", "create-recipe", "edit-profile", "error-boundary", "modal", "restaurant-dashboard", "settings", "_sitemap", "(auth)", "(tabs)", "edit_recipe/[id]", "recipe/[id]", "restaurant/[id]", "restaurant/[id]/add-menu-items", "restaurant/[id]/manage"]
+ ERROR  Warning: TypeError: Cannot read property 'find' of undefined
+
+This error is located at:
+
+ecipe/[id]", "recipe/[id]", "restaurant/[id]", "restaurant/[id]/add-menu-items", "restaurant/[id]/manage"]
+ WARN  [Layout children]: No route named "restaurant/[id]/edit-menu-item" exists in nested children: ["+not-found", "checkout", "create-recipe", "edit-profile", "error-boundary", "modal", "restaurant-dashboard", "settings", "_sitemap", "(auth)", "(tabs)", "edit_recipe/[id]", "recipe/[id]", "restaurant/[id]", "restaurant/[id]/add-menu-items", "restaurant/[id]/manage"]
+ ERROR  Warning: TypeError: Cannot read property 'find' of undefined
+
+This error is located at:
+
+
+This error is located at:
+
+
+Call Stack
+  ScreenContentWrapper (<anonymous>)
+  RNSScreenStack (<anonymous>)
+  RootLayoutNav (<anonymous>)
+  RNCSafeAreaProvider (<anonymous>)
+  App (<anonymous>)
+  ErrorOverlay (<anonymous>)
+ WARN  Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app/(tabs)/_layout"
+ WARN  Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app/(tabs)/_layout"
+ WARN  Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app/(tabs)/_layout"
+ WARN  Layout children must be of type Screen, all other children are ignored. To use custom children, create a custom <Layout />. Update Layout Route at: "app/(tabs)/_layout"
+ ERROR  Warning: TypeError: Cannot read property 'prepTime' of undefined
