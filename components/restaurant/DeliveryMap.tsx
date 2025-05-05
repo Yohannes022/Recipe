@@ -23,12 +23,16 @@ let Marker: any;
 let Polyline: any;
 let PROVIDER_GOOGLE: any;
 
-if (Platform.OS !== "web") {
-  const MapComponents = require("react-native-maps");
-  MapView = MapComponents.default;
-  Marker = MapComponents.Marker;
-  Polyline = MapComponents.Polyline;
-  PROVIDER_GOOGLE = MapComponents.PROVIDER_GOOGLE;
+try {
+  if (Platform.OS !== "web") {
+    const MapComponents = require("react-native-maps");
+    MapView = MapComponents.default;
+    Marker = MapComponents.Marker;
+    Polyline = MapComponents.Polyline;
+    PROVIDER_GOOGLE = MapComponents.PROVIDER_GOOGLE;
+  }
+} catch (error) {
+  console.warn("Maps module not available");
 }
 
 // Import icons that work on all platforms

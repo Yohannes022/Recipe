@@ -35,13 +35,7 @@ import { useLocationStore } from "@/store/locationStore";
 import { useOrderStore } from "@/store/orderStore";
 import { useRestaurantStore } from "@/store/restaurantStore";
 
-function OrderTrackingScreen() {
-  
-// ... rest of component code ...
-
-}
-
-export default OrderTrackingScreen;
+export default function OrderTrackingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { getOrderById, cancelOrder } = useOrderStore();
