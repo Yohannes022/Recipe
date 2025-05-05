@@ -255,19 +255,21 @@ export default function RecipeDetailScreen() {
             </View>
           )}
 
-          <View style={styles.metaContainer}>
-            <View style={styles.metaItem}>
-              <Clock size={16} color={"#8E8E8E"} />
-              <Text style={styles.metaText}>{totalTime} min</Text>
+          {recipe && (
+            <View style={styles.metaContainer}>
+              <View style={styles.metaItem}>
+                <Clock size={16} color={"#8E8E8E"} />
+                <Text style={styles.metaText}>{recipe.prepTime + recipe.cookTime} min</Text>
+              </View>
+              <View style={styles.metaItem}>
+                <Users size={16} color={"#8E8E8E"} />
+                <Text style={styles.metaText}>{recipe.servings} servings</Text>
+              </View>
+              <View style={styles.metaDifficulty}>
+                <Text style={styles.difficultyText}>{recipe.difficulty}</Text>
+              </View>
             </View>
-            <View style={styles.metaItem}>
-              <Users size={16} color={"#8E8E8E"} />
-              <Text style={styles.metaText}>{recipe.servings} servings</Text>
-            </View>
-            <View style={styles.metaDifficulty}>
-              <Text style={styles.difficultyText}>{recipe.difficulty}</Text>
-            </View>
-          </View>
+          )}
 
           <View style={styles.actions}>
             <TouchableOpacity
