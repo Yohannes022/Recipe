@@ -93,7 +93,7 @@ export default function DeliveryMap({
   }, [restaurantLocation, deliveryPersonLocation, userLocation]);
 
   // For web platform, show a placeholder instead of the map
-  if (Platform.OS === "web") {
+  if (Platform.OS === "web" || !MapView) {
     return (
       <View style={styles.webPlaceholder}>
         <Text style={styles.webPlaceholderText}>
