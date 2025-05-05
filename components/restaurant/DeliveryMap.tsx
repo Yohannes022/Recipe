@@ -10,11 +10,11 @@ import typography from "@/constants/typography";
 import { Location } from "@/types/restaurant";
 import React, { useEffect, useState } from "react";
 import {
-    Dimensions,
-    Platform,
-    StyleSheet,
-    Text,
-    View,
+  Dimensions,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 // Only import map components when not on web platform
@@ -70,19 +70,19 @@ export default function DeliveryMap({
         deliveryPersonLocation.longitude,
         userLocation.longitude,
       ];
-      
+
       const minLat = Math.min(...latitudes);
       const maxLat = Math.max(...latitudes);
       const minLng = Math.min(...longitudes);
       const maxLng = Math.max(...longitudes);
-      
+
       const centerLat = (minLat + maxLat) / 2;
       const centerLng = (minLng + maxLng) / 2;
-      
+
       // Calculate appropriate deltas to fit all markers
       const latDelta = (maxLat - minLat) * 1.5;
       const lngDelta = (maxLng - minLng) * 1.5;
-      
+
       setRegion({
         latitude: centerLat,
         longitude: centerLng,
@@ -154,7 +154,7 @@ export default function DeliveryMap({
             <MapPin size={20} color={"#FFFFFF"} />
           </View>
         </Marker>
-        
+
         {/* Delivery person marker */}
         {deliveryPersonLocation && (
           <Marker
@@ -168,7 +168,7 @@ export default function DeliveryMap({
             </View>
           </Marker>
         )}
-        
+
         {/* User location marker */}
         <Marker
           coordinate={{
@@ -180,7 +180,7 @@ export default function DeliveryMap({
             <Home size={20} color={"#FFFFFF"} />
           </View>
         </Marker>
-        
+
         {/* Route line from restaurant to delivery person */}
         {deliveryPersonLocation && (
           <Polyline
@@ -199,7 +199,7 @@ export default function DeliveryMap({
             lineDashPattern={[1, 3]}
           />
         )}
-        
+
         {/* Route line from delivery person to user */}
         {deliveryPersonLocation && (
           <Polyline
@@ -218,7 +218,7 @@ export default function DeliveryMap({
           />
         )}
       </MapView>
-      
+
       {/* Estimated delivery time overlay */}
       {estimatedTime && (
         <View style={styles.estimatedTimeContainer}>
