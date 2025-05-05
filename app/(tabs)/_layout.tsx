@@ -2,13 +2,11 @@
  * Tab navigation layout
  * Defines the main tab structure for the app
  * Includes tabs for home, explore, restaurants, cart, create, and profile
- * Shows badge on cart tab when items are present
  */
 
 import { Tabs } from "expo-router";
 import { BarChart2, Home, PlusSquare, Search, Store, User } from "lucide-react-native";
 import React from "react";
-// 
 import { useAuthStore } from "@/store/authStore";
 
 export default function TabLayout() {
@@ -39,14 +37,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <Home size={22} color="#0095F6" />,
+          tabBarIcon: ({ color }) => <Home size={22} color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color="#0095F6" }) => <Search size={22} color={color} />,
+          tabBarIcon: ({ color }) => <Search size={22} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -58,18 +56,9 @@ export default function TabLayout() {
       />
       {showRestaurantTab && (
         <Tabs.Screen
-          name="restaurants"
+          name="restaurant-dashboard"
           options={{
-            title: "Restaurants",
-            tabBarIcon: ({ color }) => <Store size={22} color={color} />,
-          }}
-        />
-      )}
-      {showRestaurantTab && (
-        <Tabs.Screen
-          name="dashboard"
-          options={{
-            title: "Dashboard",
+            title: "Dashboard", 
             tabBarIcon: ({ color }) => <BarChart2 size={22} color={color} />,
           }}
         />
