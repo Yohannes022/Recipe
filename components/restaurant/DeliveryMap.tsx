@@ -1,3 +1,4 @@
+
 /**
  * Delivery map component for tracking order delivery
  * Shows restaurant location, delivery person location, and user location
@@ -22,7 +23,6 @@ let Marker: any;
 let Polyline: any;
 let PROVIDER_GOOGLE: any;
 
-// Conditionally import map components to avoid web bundling issues
 if (Platform.OS !== "web") {
   const MapComponents = require("react-native-maps");
   MapView = MapComponents.default;
