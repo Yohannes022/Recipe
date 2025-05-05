@@ -74,8 +74,8 @@ export interface Restaurant {
   id: string;
   name: string;
   description: string;
-  logo?: string;
-  coverImage?: string;
+  imageUrl: string;
+  coverImageUrl?: string;
   location: Location;
   phone: string;
   email?: string;

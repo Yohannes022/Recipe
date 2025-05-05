@@ -153,7 +153,7 @@ export default function RestaurantDashboardScreen() {
       <View style={styles.header}>
         <View style={styles.restaurantInfo}>
           <Image
-            source={{ uri: restaurant.imageUrl }}
+            source={{ uri: restaurant.coverImageUrl || restaurant.imageUrl }}
             style={styles.restaurantImage}
             contentFit="cover"
           />
