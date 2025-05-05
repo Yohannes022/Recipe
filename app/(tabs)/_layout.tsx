@@ -1,11 +1,6 @@
-/**
- * Tab navigation layout
- * Defines the main tab structure for the app
- * Includes tabs for home, explore, restaurants, cart, create, and profile
- */
 
 import { Tabs } from "expo-router";
-import { BarChart2, Home, PlusSquare, Search, Store, User } from "lucide-react-native";
+import { BarChart2, Home, PlusSquare, Search, User } from "lucide-react-native";
 import React from "react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -58,7 +53,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="restaurant-dashboard"
           options={{
-            title: "Dashboard", 
+            title: "Dashboard",
             tabBarIcon: ({ color }) => <BarChart2 size={22} color={color} />,
           }}
         />
