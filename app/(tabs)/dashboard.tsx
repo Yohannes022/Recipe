@@ -1,0 +1,625 @@
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Image } from "expo-image";
+import { 
+  BarChart2, 
+  Users, 
+  Star, 
+  TrendingUp, 
+  Calendar, 
+  Clock, 
+  Menu, 
+  Settings,
+  ChevronRight
+} from "lucide-react-native";
+// import colors from "@/constants/colors";
+import typography from "@/constants/typography";
+import { useAuthStore } from "@/store/authStore";
+import { useRestaurantStore } from "@/store/restaurantStore";
+import { useRecipeStore } from "@/store/recipeStore";
+
+export default function RestaurantDashboardScreen() {
+  const router = useRouter();
+  const { user } = useAuthStore();
+  const { restaurants, getRestaurantById } = useRestaurantStore();
+  const { recipes } = useRecipeStore();
+  const [selectedPeriod, setSelectedPeriod] = useState<"day" | "week" | "month" | "year">("week");
+
+  // Get user's restaurant if they are a restaurant owner
+  const userRestaurant = user?.restaurantId 
+    ? getRestaurantById(user.restaurantId) 
+    : undefined;
+
+  // Get restaurant recipes
+  const restaurantRecipes = recipes.filter(recipe => recipe.restaurantId === userRestaurant?.id);
+
+  // Calculate total views (mock data)
+  const totalViews = 1250 + Math.floor(Math.random() * 500);
+
+  // Calculate total likes
+  const totalLikes = restaurantRecipes.reduce((sum, recipe) => sum + recipe.likes, 0);
+
+  // Calculate average rating
+  const averageRating = userRestaurant?.rating || 0;
+
+  // Mock data for charts
+  const weeklyViewsData = [120, 145, 160, 180, 210, 190, 245];
+  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+  const handleManageRestaurant = () => {
+    if (userRestaurant) {
+      router.push(`/restaurant/${userRestaurant.id}/manage`);
+    }
+  };
+
+  const handleAddMenuItem = () => {
+    if (userRestaurant) {
+      router.push(`/restaurant/${userRestaurant.id}/add-menu-item`);
+    }
+  };
+
+  const handleViewAnalytics = () => {
+    // In a real app, this would navigate to a detailed analytics screen
+    alert("View detailed analytics functionality would be implemented here");
+  };
+
+  if (!userRestaurant) {
+    return (
+      <View style={styles.emptyContainer}>
+        <BarChart2 size={64} color={"#8E8E8E"} />
+        <Text style={styles.emptyTitle}>No restaurant found</Text>
+        <Text style={styles.emptySubtitle}>
+          You need to be a restaurant owner to access the dashboard
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.title}>Dashboard</Text>
+          <Text style={styles.subtitle}>{userRestaurant.name}</Text>
+        </View>
+        <TouchableOpacity onPress={handleManageRestaurant}>
+          <Settings size={24} color={"#262626"} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.restaurantCard}>
+        <Image
+          source={{ uri: userRestaurant.coverImageUrl }}
+          style={styles.coverImage}
+          contentFit="cover"
+        />
+        <View style={styles.logoContainer}>
+          <Image
+            source={{ uri: userRestaurant.logo }}
+            style={styles.logo}
+            contentFit="cover"
+          />
+        </View>
+        <View style={styles.restaurantInfo}>
+          <Text style={styles.restaurantName}>{userRestaurant.name}</Text>
+          <Text style={styles.restaurantLocation}>{userRestaurant.location}</Text>
+          <View style={styles.statsRow}>
+            <View style={styles.statItem}>
+              <Users size={16} color={"#0095F6"} />
+              <Text style={styles.statValue}>{userRestaurant.followers}</Text>
+              <Text style={styles.statLabel}>Followers</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Star size={16} color={"#0095F6"} />
+              <Text style={styles.statValue}>{userRestaurant.rating.toFixed(1)}</Text>
+              <Text style={styles.statLabel}>Rating</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Menu size={16} color={"#0095F6"} />
+              <Text style={styles.statValue}>
+                {userRestaurant.menuCategories.reduce(
+                  (sum, category) => sum + category.items.length, 0
+                )}
+              </Text>
+              <Text style={styles.statLabel}>Menu Items</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.periodSelector}>
+        <TouchableOpacity
+          style={[styles.periodButton, selectedPeriod === "day" && styles.selectedPeriod]}
+          onPress={() => setSelectedPeriod("day")}
+        >
+          <Text style={[styles.periodText, selectedPeriod === "day" && styles.selectedPeriodText]}>
+            Day
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.periodButton, selectedPeriod === "week" && styles.selectedPeriod]}
+          onPress={() => setSelectedPeriod("week")}
+        >
+          <Text style={[styles.periodText, selectedPeriod === "week" && styles.selectedPeriodText]}>
+            Week
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.periodButton, selectedPeriod === "month" && styles.selectedPeriod]}
+          onPress={() => setSelectedPeriod("month")}
+        >
+          <Text style={[styles.periodText, selectedPeriod === "month" && styles.selectedPeriodText]}>
+            Month
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.periodButton, selectedPeriod === "year" && styles.selectedPeriod]}
+          onPress={() => setSelectedPeriod("year")}
+        >
+          <Text style={[styles.periodText, selectedPeriod === "year" && styles.selectedPeriodText]}>
+            Year
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.statsContainer}>
+        <View style={styles.statCard}>
+          <View style={styles.statHeader}>
+            <TrendingUp size={20} color={"#0095F6"} />
+            <Text style={styles.statTitle}>Views</Text>
+          </View>
+          <Text style={styles.statNumber}>{totalViews}</Text>
+          <Text style={styles.statChange}>+12.5% from last week</Text>
+        </View>
+
+        <View style={styles.statCard}>
+          <View style={styles.statHeader}>
+            <Users size={20} color={"#0095F6"} />
+            <Text style={styles.statTitle}>Likes</Text>
+          </View>
+          <Text style={styles.statNumber}>{totalLikes}</Text>
+          <Text style={styles.statChange}>+8.3% from last week</Text>
+        </View>
+
+        <View style={styles.statCard}>
+          <View style={styles.statHeader}>
+            <Star size={20} color={"#0095F6"} />
+            <Text style={styles.statTitle}>Rating</Text>
+          </View>
+          <Text style={styles.statNumber}>{averageRating.toFixed(1)}</Text>
+          <Text style={styles.statChange}>+0.2 from last month</Text>
+        </View>
+      </View>
+
+      <View style={styles.chartContainer}>
+        <View style={styles.chartHeader}>
+          <Text style={styles.chartTitle}>Weekly Views</Text>
+          <TouchableOpacity onPress={handleViewAnalytics}>
+            <Text style={styles.viewAllText}>View All</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.chart}>
+          <View style={styles.chartBars}>
+            {weeklyViewsData.map((value, index) => (
+              <View key={index} style={styles.barContainer}>
+                <View 
+                  style={[
+                    styles.bar, 
+                    { 
+                      height: (value / Math.max(...weeklyViewsData)) * 150,
+                      backgroundColor: index === 6 ? "#0095F6" : `${"#0095F6"}80`
+                    }
+                  ]} 
+                />
+                <Text style={styles.barLabel}>{weekDays[index]}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.actionsContainer}>
+        <Text style={styles.sectionTitle}>Quick Actions</Text>
+
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={handleAddMenuItem}
+        >
+          <View style={styles.actionIconContainer}>
+            <Menu size={20} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.actionTextContainer}>
+            <Text style={styles.actionTitle}>Add Menu Item</Text>
+            <Text style={styles.actionDescription}>Create a new dish for your menu</Text>
+          </View>
+          <ChevronRight size={20} color={"#8E8E8E"} />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={() => router.push("/create-recipe")}
+        >
+          <View style={[styles.actionIconContainer, { backgroundColor: "#8E8E8E" }]}>
+            <PlusSquare size={20} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.actionTextContainer}>
+            <Text style={styles.actionTitle}>Add Recipe</Text>
+            <Text style={styles.actionDescription}>Share a new recipe with your followers</Text>
+          </View>
+          <ChevronRight size={20} color={"#8E8E8E"} />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.actionButton}
+          onPress={handleManageRestaurant}
+        >
+          <View style={[styles.actionIconContainer, { backgroundColor: "#FBAD50" }]}>
+            <Settings size={20} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.actionTextContainer}>
+            <Text style={styles.actionTitle}>Manage Restaurant</Text>
+            <Text style={styles.actionDescription}>Update your restaurant profile</Text>
+          </View>
+          <ChevronRight size={20} color={"#8E8E8E"} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.recentActivityContainer}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <TouchableOpacity>
+            <Text style={styles.viewAllText}>View All</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.activityItem}>
+          <View style={styles.activityIconContainer}>
+            <Star size={16} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.activityContent}>
+            <Text style={styles.activityText}>
+              <Text style={styles.activityHighlight}>John Doe</Text> rated your restaurant 5 stars
+            </Text>
+            <Text style={styles.activityTime}>2 hours ago</Text>
+          </View>
+        </View>
+
+        <View style={styles.activityItem}>
+          <View style={[styles.activityIconContainer, { backgroundColor: "#8E8E8E" }]}>
+            <Users size={16} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.activityContent}>
+            <Text style={styles.activityText}>
+              <Text style={styles.activityHighlight}>5 new users</Text> followed your restaurant
+            </Text>
+            <Text style={styles.activityTime}>Yesterday</Text>
+          </View>
+        </View>
+
+        <View style={styles.activityItem}>
+          <View style={[styles.activityIconContainer, { backgroundColor: "#FBAD50" }]}>
+            <TrendingUp size={16} color={"#FFFFFF"} />
+          </View>
+          <View style={styles.activityContent}>
+            <Text style={styles.activityText}>
+              Your recipe <Text style={styles.activityHighlight}>Doro Wat</Text> reached 100 likes
+            </Text>
+            <Text style={styles.activityTime}>2 days ago</Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FAFAFA",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  title: {
+    ...typography.heading2,
+  },
+  subtitle: {
+    ...typography.body,
+    color: "#8E8E8E",
+  },
+  restaurantCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    overflow: "hidden",
+    margin: 20,
+    marginTop: 10,
+    elevation: 2,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  coverImage: {
+    height: 100,
+    width: "100%",
+  },
+  logoContainer: {
+    position: "absolute",
+    top: 70,
+    left: 20,
+    borderRadius: 30,
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+    backgroundColor: "#FFFFFF",
+    elevation: 4,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  restaurantInfo: {
+    padding: 20,
+    paddingTop: 30,
+  },
+  restaurantName: {
+    ...typography.heading3,
+    marginBottom: 4,
+  },
+  restaurantLocation: {
+    ...typography.bodySmall,
+    color: "#8E8E8E",
+    marginBottom: 16,
+  },
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  statItem: {
+    alignItems: "center",
+  },
+  statValue: {
+    ...typography.heading4,
+    marginTop: 4,
+    marginBottom: 2,
+  },
+  statLabel: {
+    ...typography.caption,
+    color: "#8E8E8E",
+  },
+  periodSelector: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+    marginBottom: 20,
+    backgroundColor: "#EFEFEF",
+    borderRadius: 8,
+    padding: 4,
+  },
+  periodButton: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderRadius: 6,
+  },
+  selectedPeriod: {
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  periodText: {
+    ...typography.bodySmall,
+    color: "#8E8E8E",
+  },
+  selectedPeriodText: {
+    color: "#0095F6",
+    fontWeight: "600",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    elevation: 1,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  statHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  statTitle: {
+    ...typography.bodySmall,
+    marginLeft: 6,
+    color: "#8E8E8E",
+  },
+  statNumber: {
+    ...typography.heading3,
+    marginBottom: 4,
+  },
+  statChange: {
+    ...typography.caption,
+    color: "#58C322",
+  },
+  chartContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 24,
+    elevation: 1,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  chartHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  chartTitle: {
+    ...typography.heading4,
+  },
+  viewAllText: {
+    ...typography.bodySmall,
+    color: "#0095F6",
+  },
+  chart: {
+    height: 200,
+  },
+  chartBars: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    height: 180,
+  },
+  barContainer: {
+    alignItems: "center",
+    flex: 1,
+  },
+  bar: {
+    width: 20,
+    borderRadius: 10,
+    marginBottom: 8,
+  },
+  barLabel: {
+    ...typography.caption,
+    color: "#8E8E8E",
+  },
+  actionsContainer: {
+    marginHorizontal: 20,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    ...typography.heading3,
+    marginBottom: 16,
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 1,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  actionIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#0095F6",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  actionTextContainer: {
+    flex: 1,
+  },
+  actionTitle: {
+    ...typography.body,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  actionDescription: {
+    ...typography.caption,
+    color: "#8E8E8E",
+  },
+  recentActivityContainer: {
+    marginHorizontal: 20,
+    marginBottom: 40,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  activityItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    elevation: 1,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  activityIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#0095F6",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 16,
+  },
+  activityContent: {
+    flex: 1,
+  },
+  activityText: {
+    ...typography.body,
+    marginBottom: 4,
+  },
+  activityHighlight: {
+    fontWeight: "600",
+  },
+  activityTime: {
+    ...typography.caption,
+    color: "#8E8E8E",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyTitle: {
+    ...typography.heading3,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    ...typography.body,
+    color: "#8E8E8E",
+    textAlign: "center",
+  },
+});
