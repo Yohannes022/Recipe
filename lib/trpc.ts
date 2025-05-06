@@ -1,7 +1,7 @@
+
 import { createTRPCReact } from "@trpc/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { QueryClient } from "@tanstack/react-query";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 import { AppRouter } from "../backend/trpc/app-touter";
 import AsyncStorage from "@react-native-async-storage/async-storage";
